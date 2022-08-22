@@ -1,0 +1,30 @@
+{% extends 'territorio/base.html' %}
+{% block modulo %} Crear aprendiz {% endblock %}
+
+{% block body %}
+    
+    <h1>Formulario de registro de aprendiz</h1>
+    <form action="{% url 'territorio:guardar-aprend' %}" method="post">
+
+        {% csrf_token %}
+
+        <br/><label for="cedula">Cédula: </label>
+        <input class="form-control" type="number" name="cedula" placeholder="Cédula"><br/><br/>
+
+        <label for="nombre">Nombre: </label>
+        <input class="form-control" type="text" name="nombre" placeholder="Nombre"><br/><br/>
+
+        <label for="apellido">Apellido: </label>
+        <input class="form-control" type="text" name="apellido" placeholder="Apellido"><br/><br/>
+
+        <label for="fecha_nacimiento">Fecha de nacimiento: </label>
+        <input class="form-control" type="date" name="fecha_nacimiento" placeholder="Fecha de nacimiento"><br/><br/>
+
+        <input class="btn btn-warning" type="submit" value="Guardar">
+    </form>
+    
+{% endblock %}
+
+{% block terrImg %}
+    
+{% endblock %}

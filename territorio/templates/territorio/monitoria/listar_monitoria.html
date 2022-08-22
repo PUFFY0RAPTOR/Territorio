@@ -1,0 +1,44 @@
+{% extends 'territorio/base.html' %}
+{% block modulo %} Monitorias {% endblock %}
+
+{% block body %}
+
+    <h1>Monitorias</h1>
+    <!---->
+    <a href="{% url 'territorio:form-monitoria' %}">Crear monitoria</a><br/><br/>
+    {% if datos %}
+        
+        <table class="container table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Categoria</th>
+                    <th>Aprendiz</th>
+                    <th>Fecha inicio</th>
+                    <th>Fecha final</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in datos %}
+                    <tr>
+                        <td>{{i.id}}</td>
+                        <td>{{i.cat}}</td>
+                        <td>{{i.aprendiz}} {{i.aprendiz.apellido}}</td>
+                        <td>{{i.fecha_inicio}}</td>
+                        <td>{{i.fecha_final}}</td>
+                        <td><a class="btn btn-warning" href="">Editar</a></td>
+                        <td><a class="btn btn-danger" href="{% url 'territorio:elim-monit' i.id %}">Eliminar</a></td>
+                    </tr>    
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+    
+{% endblock %}
+
+{% block terrImg %}
+    
+{% endblock %}

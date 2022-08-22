@@ -1,0 +1,11 @@
+<form action="{% url 'territorio:login' %}" method="post">
+    {% csrf_token %}
+    
+    <label>Usuario</label>
+    <input type="text" name="usuario"/><br/>
+
+    <label>Password</label>
+    <input type="password" name="clave"/><br/>
+
+    <button type="submit">Enviar</button>
+</form>
