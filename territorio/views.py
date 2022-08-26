@@ -1,15 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Aprendiz, Monitoria, Actividades
 from django.urls import reverse
-from django.db import IntegrityError
+from django.db import IntegrityError #Gestión de errorees de bases de datos
 
-# Create your views here.
+#Mensajes tipo cookies temporales
+from django.contrib import messages
+
 
 #El request es un parametro que necesita django para manipular la peticion-respuesta (GET, POST, DELETE)
 
 def index(request):    
     return render(request, 'territorio/index.html')
+
 
 def listarAprendiz(request):
 
@@ -17,6 +20,7 @@ def listarAprendiz(request):
     contexto = { 'datos': q }
 
     return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
+
 
 def eliminarAprendiz(request, id):
     try:
@@ -29,25 +33,65 @@ def eliminarAprendiz(request, id):
     except IntegrityError:
         return HttpResponse('Error: No se puede eliminar al Aprendiz ya que está siendo usado')
     except Exception as e:
-        return HttpResponse(f'Error: {e}')        
+        return HttpResponse(f'Error: {e}')      
+
+
+def aprendizFormularioEditar(request, id):
+    a = Aprendiz.objects.get(pk = id)
+    contexto = {'datos': a}
+
+    return render(request, 'territorio/aprendiz/editar_aprendiz.html', contexto) 
+
+
+def actualizarAprendiz(request):
+    try:
+        if request.method == "POST":
+            a = Aprendiz.objects.get(pk = request.POST["cedula"])
+            
+            a.cedula = request.POST["cedula"]
+            a.nombre = request.POST["nombre"]
+            a.apellido = request.POST["apellido"]
+            a.fecha_nacimiento = request.POST["fecha_nacimiento"]
+
+            a.save()
+            messages.success(request, 'Aprendiz guardado correctamente')
+            return redirect('territorio:aprendices')
+            #return HttpResponseRedirect(reverse('territorio:aprendices'))
+        else:
+            messages.warning(request, 'A hackear a su madre perr*')
+            return redirect('territorio:aprendices')    
+    except Exception as e:
+        messages.error(request, 'Error : ' + str(e))
+        return redirect('territorio:aprendices')
 
 
 def aprendicesFormulario(request):
     return render(request, 'territorio/aprendiz/crear_aprendiz.html')
 
+
 def aprendicesGuardar(request):
     try:
-        q = Aprendiz(
-            cedula = request.POST["cedula"],
-            nombre = request.POST["nombre"],
-            apellido = request.POST["apellido"],
-            fecha_nacimiento = request.POST["fecha_nacimiento"],
-        )
-        q.save()
-        #return HttpResponse("Aprendiz guardado correctamente<br/><a href='../aprendices/'>Listar aprendices</a>")
-        return HttpResponseRedirect(reverse('territorio:aprendices'))
+        if request.method == "POST":
+            q = Aprendiz(
+                cedula = request.POST["cedula"],
+                nombre = request.POST["nombre"],
+                apellido = request.POST["apellido"],
+                fecha_nacimiento = request.POST["fecha_nacimiento"],
+            )
+            q.save()
+            messages.warning(request, 'Aprendiz guardado correctamente')
+            return redirect('territorio:aprendices')
+            #return HttpResponseRedirect(reverse('territorio:aprendices'))
+        else:
+            messages.warning(request, 'A hackear a su madre perr*')
+            return redirect('territorio:aprendices')    
     except Exception as e:
-        return HttpResponse("Error : " + str(e))
+        messages.error(request, 'Error : ' + str(e))
+        return redirect('territorio:aprendices')
+        #return HttpResponse("Error : " + str(e))
+
+#------------------------------------------- Aprendices -----------------------------------------------------
+
 
 def listarMonitorias(request):
 
@@ -56,6 +100,7 @@ def listarMonitorias(request):
     contexto = { 'datos': m}
 
     return render(request, 'territorio/monitoria/listar_monitoria.html', contexto)
+
 
 def monitoriaFormulario(request):
 
@@ -66,6 +111,14 @@ def monitoriaFormulario(request):
     contexto = { 'data': q}
 
     return render(request, 'territorio/monitoria/crear_monitoria.html', contexto)
+
+
+def monitoriaFormularioEditar(request, id):
+    a = Monitoria.objects.get(pk = id)
+    contexto = {'datos': a}
+
+    return render(request, 'territorio/monitoria/editar_monitoria.html', contexto) 
+
 
 def eliminarMonitoria(request, id):
     try:
@@ -79,6 +132,29 @@ def eliminarMonitoria(request, id):
         return HttpResponse('Error: No se puede eliminar al Aprendiz ya que está siendo usado')
     except Exception as e:
         return HttpResponse(f'Error: {e}')
+
+
+def actualizarMonitoria(request):
+    try:
+        if request.method == "POST":
+            a = Monitoria.objects.get(pk = request.POST["id"])
+            
+            a.cedula = request.POST["cedula"]
+            a.nombre = request.POST["nombre"]
+            a.apellido = request.POST["apellido"]
+            a.fecha_nacimiento = request.POST["fecha_nacimiento"]
+
+            a.save()
+            messages.success(request, 'Aprendiz guardado correctamente')
+            return redirect('territorio:aprendices')
+            #return HttpResponseRedirect(reverse('territorio:aprendices'))
+        else:
+            messages.warning(request, 'A hackear a su madre perr*')
+            return redirect('territorio:aprendices')    
+    except Exception as e:
+        messages.error(request, 'Error : ' + str(e))
+        return redirect('territorio:aprendices')
+
 
 def monitoriaGuardar(request):
     
@@ -97,9 +173,20 @@ def monitoriaGuardar(request):
     except Exception as e:
         return HttpResponse("Error : " + str(e))
 
+
+#------------------------------------------- Monitorias -----------------------------------------------------
+
+
 def listarActividades(request):
 
     a = Actividades.objects.all()
     contexto = {'datos': a}
 
     return render(request, 'territorio/actividades/listar_actividades.html', contexto)
+
+
+#------------------------------------------- Actividades -----------------------------------------------------
+
+
+
+#Consultar offcanvas en Bootstrap 5

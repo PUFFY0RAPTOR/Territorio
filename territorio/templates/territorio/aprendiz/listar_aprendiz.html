@@ -3,6 +3,14 @@
 
     {% block body %}
 
+        {% if messages %}
+            {% for m in messages %}
+                <br/><div class="container alert alert-{% if m.tags != 'error' %}{{ m.tags }}{% elif m.tags == 'error' %}danger{% endif %}" role="alert">
+                    {{ m }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <h1 style="text-align: center;">Aprendices</h1>
 
         <a class="btn" href="{% url 'territorio:form-aprendiz' %}">Nuevo aprendiz</a><br>
@@ -27,7 +35,7 @@
                     <td>{{ r.nombre}}</td>
                     <td>{{ r.apellido}}</td>
                     <td>{{r.fecha_nacimiento}}</td>
-                    <td><a class="btn btn-warning" href="">Editar</a></td>
+                    <td><a class="btn btn-warning" href="{% url 'territorio:edit-aprend' r.cedula %}">Editar</a></td>
                     <td><a class="btn btn-danger" href="{% url 'territorio:elim-aprend' r.cedula %}">Eliminar</a></td>
                 </tr>
                 {% endfor %}

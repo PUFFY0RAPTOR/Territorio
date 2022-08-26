@@ -1,0 +1,32 @@
+{% extends 'territorio/base.html' %}
+{% block modulo %} Editar aprendiz {% endblock %}
+
+{% block body %}
+    
+    <h1>Editar aprendiz --- {{datos.nombre}}</h1>
+    <form action="{% url 'territorio:actual_aprend' %}" method="post">
+
+        {% csrf_token %}
+
+        <!--<input type="number" name="id" value="{{datos.cedula}}" hidden>-->
+
+        <br/><label for="cedula">Cédula: </label>
+        <input class="form-control" type="number" name="cedula" value="{{datos.cedula}}"><br/><br/>
+
+        <label for="nombre">Nombre: </label>
+        <input class="form-control" type="text" name="nombre" value="{{datos.nombre}}"><br/><br/>
+
+        <label for="apellido">Apellido: </label>
+        <input class="form-control" type="text" name="apellido" value="{{datos.apellido}}"><br/><br/>
+
+        <label for="fecha_nacimiento">Fecha de nacimiento: </label>
+        <input class="form-control" type="date" name="fecha_nacimiento" value="{{datos.fecha_nacimiento|date:'Y-m-d'}}"><br/><br/>
+
+        <input class="btn btn-warning" type="submit" value="Guardar">
+    </form>
+    
+{% endblock %}
+
+{% block terrImg %}
+    
+{% endblock %}
