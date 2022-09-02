@@ -1,0 +1,44 @@
+{% extends 'territorio/base.html' %}
+{% block modulo %} Crear aprendiz {% endblock %}
+
+{% block body %}
+    
+    <!--{% if data %}
+        <h6>{{data}}</h6>
+    {% endif %}-->
+
+    <h1>Formulario de registro de monitorias</h1>
+    <form action="{% url 'territorio:guardar-monit' %}" method="post">
+
+        {% csrf_token %}
+
+        <br/><label for="cat">Categoria: </label>
+        <input class="form-control" type="text" name="cat" placeholder="Categoria"><br/><br/>
+
+        <label for="aprendiz">Nombre aprendiz: </label>
+        <!--<input type="number" name="aprendiz" placeholder="aprendiz">-->
+        {% if data %}
+    
+        <select name="aprendiz">
+            <option value="" selected>Seleccione aprendiz</option>
+            {% for i in data %}
+            <option>{{i.cedula}}</option>
+            {% endfor %}    
+        </select>
+
+        {% endif %}
+
+        <br/><br/><label for="fecha_inicio">Fecha inicio: </label>
+        <input class="form-control" type="datetime-local" name="fecha_inicio" placeholder="Fecha inicio"><br/><br/>
+
+        <label for="fecha_final">Fecha final: </label>
+        <input class="form-control" type="datetime-local" name="fecha_final" placeholder="Fecha final"><br/><br/>
+
+        <input type="submit" value="Guardar">
+    </form>
+    
+{% endblock %}
+
+{% block terrImg %}
+    
+{% endblock %}

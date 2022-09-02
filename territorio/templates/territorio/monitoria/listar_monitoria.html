@@ -28,7 +28,7 @@
                         <td>{{i.aprendiz}} {{i.aprendiz.apellido}}</td>
                         <td>{{i.fecha_inicio}}</td>
                         <td>{{i.fecha_final}}</td>
-                        <td><a class="btn btn-warning" href="">Editar</a></td>
+                        <td><a class="btn btn-warning" href="{% url 'territorio:edit-monit' i.id %}">Editar</a></td>
                         <td><a class="btn btn-danger" href="{% url 'territorio:elim-monit' i.id %}">Eliminar</a></td>
                     </tr>    
                 {% endfor %}

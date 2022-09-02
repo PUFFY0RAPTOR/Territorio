@@ -7,6 +7,9 @@ from django.db import IntegrityError #Gestión de errorees de bases de datos
 #Mensajes tipo cookies temporales
 from django.contrib import messages
 
+#Para la paginación
+from django.core.paginator import Paginator
+
 
 #El request es un parametro que necesita django para manipular la peticion-respuesta (GET, POST, DELETE)
 
@@ -17,7 +20,15 @@ def index(request):
 def listarAprendiz(request):
 
     q = Aprendiz.objects.all()
-    contexto = { 'datos': q }
+
+    #Paginación
+    pag = Paginator(q, 6)
+    page_number = request.GET.get('page')
+
+    #Sobreescibe el query
+    q = pag.get_page(page_number)
+
+    contexto = { 'page_obj': q }
 
     return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
 
@@ -114,8 +125,11 @@ def monitoriaFormulario(request):
 
 
 def monitoriaFormularioEditar(request, id):
+
     a = Monitoria.objects.get(pk = id)
-    contexto = {'datos': a}
+    p = Aprendiz.objects.all()
+
+    contexto = {'datos': a, 'aprendices': p}
 
     return render(request, 'territorio/monitoria/editar_monitoria.html', contexto) 
 
@@ -158,7 +172,7 @@ def actualizarMonitoria(request):
 
 def monitoriaGuardar(request):
     
-    f = int(request.POST["aprendiz"])
+    f = request.POST["aprendiz"]
     
     try:
         q = Monitoria(

@@ -22,7 +22,7 @@
         <select name="aprendiz">
             <option value="" selected>Seleccione aprendiz</option>
             {% for i in data %}
-            <option>{{i.cedula}}</option>
+            <option value="{{i.cedula}}">{{i.nombre}} {{i.apellido}}</option>
             {% endfor %}    
         </select>
 

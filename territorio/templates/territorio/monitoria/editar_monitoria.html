@@ -8,31 +8,29 @@
     {% endif %}-->
 
     <h1>Editar monitorias</h1>
-    <form action="{% url 'territorio:guardar-monit' %}" method="post">
+    <form action="{% url 'territorio:actual-monit' %}" method="post">
 
         {% csrf_token %}
 
+        <input type="number" name="id" hidden>
+
         <br/><label for="cat">Categoria: </label>
-        <input class="form-control" type="text" name="cat" placeholder="Categoria"><br/><br/>
+        <input class="form-control" type="text" name="cat" value="{{ datos.cat }}"><br/><br/>
 
         <label for="aprendiz">Nombre aprendiz: </label>
-        <!--<input type="number" name="aprendiz" placeholder="aprendiz">-->
-        {% if data %}
-    
-        <select name="aprendiz">
-            <option value="" selected>Seleccione aprendiz</option>
-            {% for i in data %}
-            <option>{{i.cedula}}</option>
+        <select class="form-control" name="aprendiz" value="{{ datos.aprendiz }}">
+        {% if aprendices %}
+            {% for i in aprendices %}
+                <option value="{{ i.cedula }}">{{ i.nombre }}</option>
             {% endfor %}    
+        {% endif %}    
         </select>
 
-        {% endif %}
-
         <br/><br/><label for="fecha_inicio">Fecha inicio: </label>
-        <input class="form-control" type="datetime-local" name="fecha_inicio" placeholder="Fecha inicio"><br/><br/>
+        <input class="form-control" type="datetime-local" name="fecha_inicio" value="{{ datos.fecha_inicio|date:'Y-m-d H:i:s' }}"><br/><br/>
 
         <label for="fecha_final">Fecha final: </label>
-        <input class="form-control" type="datetime-local" name="fecha_final" placeholder="Fecha final"><br/><br/>
+        <input class="form-control" type="datetime-local" name="fecha_final" value="{{ datos.fecha_final|date:'Y-m-d H:i:s' }}"><br/><br/>
 
         <input type="submit" value="Guardar">
     </form>
