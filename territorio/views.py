@@ -10,6 +10,8 @@ from django.contrib import messages
 #Para la paginación
 from django.core.paginator import Paginator
 
+#Para poder filtrar más datos
+from django.db.models import Q
 
 #El request es un parametro que necesita django para manipular la peticion-respuesta (GET, POST, DELETE)
 
@@ -23,7 +25,7 @@ def listarAprendiz(request):
 
     #Paginación
     pag = Paginator(q, 6)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('page') #Obtiene variables de la URL
 
     #Sobreescibe el query
     q = pag.get_page(page_number)
@@ -31,6 +33,31 @@ def listarAprendiz(request):
     contexto = { 'page_obj': q }
 
     return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
+
+
+def listarAprendizBuscar(request):
+
+    if request.method == "POST":
+
+        #Se filtra para poder encontrar dependiendo de lo que se busque
+        q = Aprendiz.objects.filter(
+            Q(cedula__icontains = request.POST["dato_buscar"]) |
+            Q(nombre__icontains = request.POST["dato_buscar"]) |
+            Q(apellido__icontains = request.POST["dato_buscar"]) 
+        )
+
+        #Paginación
+        pag = Paginator(q, 6)
+        page_number = request.GET.get('page') #Obtiene variables de la URL
+
+        #Sobreescibe el query
+        q = pag.get_page(page_number)
+
+        contexto = { 'page_obj': q, 'dato_buscado':  request.POST["dato_buscar"]}
+
+        return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
+    else:
+        return redirect('territorio:aprendices')
 
 
 def eliminarAprendiz(request, id):
@@ -90,7 +117,7 @@ def aprendicesGuardar(request):
                 fecha_nacimiento = request.POST["fecha_nacimiento"],
             )
             q.save()
-            messages.warning(request, 'Aprendiz guardado correctamente')
+            messages.success(request, 'Aprendiz guardado correctamente')
             return redirect('territorio:aprendices')
             #return HttpResponseRedirect(reverse('territorio:aprendices'))
         else:
@@ -107,6 +134,11 @@ def aprendicesGuardar(request):
 def listarMonitorias(request):
 
     m = Monitoria.objects.all()
+
+    pag = Paginator(m, 3)
+    page_number = request.GET.get('page')
+
+    m = pag.get_page(page_number)
 
     contexto = { 'datos': m}
 
@@ -153,21 +185,21 @@ def actualizarMonitoria(request):
         if request.method == "POST":
             a = Monitoria.objects.get(pk = request.POST["id"])
             
-            a.cedula = request.POST["cedula"]
-            a.nombre = request.POST["nombre"]
-            a.apellido = request.POST["apellido"]
-            a.fecha_nacimiento = request.POST["fecha_nacimiento"]
+            a.cat = request.POST["cat"]
+            a.aprendiz = Aprendiz.objects.get(pk = request.POST["aprendiz"])
+            a.fecha_inicio = request.POST["fecha_inicio"]
+            a.fecha_final = request.POST["fecha_final"]
 
             a.save()
-            messages.success(request, 'Aprendiz guardado correctamente')
-            return redirect('territorio:aprendices')
+            messages.success(request, 'Monitoria guardada correctamente')
+            return redirect('territorio:monitorias')
             #return HttpResponseRedirect(reverse('territorio:aprendices'))
         else:
             messages.warning(request, 'A hackear a su madre perr*')
-            return redirect('territorio:aprendices')    
+            return redirect('territorio:monitorias')    
     except Exception as e:
         messages.error(request, 'Error : ' + str(e))
-        return redirect('territorio:aprendices')
+        return redirect('territorio:monitorias')
 
 
 def monitoriaGuardar(request):

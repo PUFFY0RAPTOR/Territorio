@@ -12,7 +12,7 @@
 
         {% csrf_token %}
 
-        <input type="number" name="id" hidden>
+        <input type="number" name="id" value="{{ datos.id }}" hidden>
 
         <br/><label for="cat">Categoria: </label>
         <input class="form-control" type="text" name="cat" value="{{ datos.cat }}"><br/><br/>
