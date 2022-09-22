@@ -62,7 +62,7 @@ def logout(request):
 def listarAprendiz(request):
 
     auth = request.session.get('auth', False)
-    if auth:
+    if auth and (auth[4] == 'R' or auth[4] == 'I'):
         q = Aprendiz.objects.all()
 
         #Paginación
