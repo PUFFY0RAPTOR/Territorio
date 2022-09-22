@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" description="Sebastian Pertuz">
+    <!-- Bootstrap 5.2.0 -->
+    <link rel="stylesheet" href="{% static 'territorio/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'territorio/css/estilos.css' %}">
+
+    <!-- favicon --> 
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'territorio/favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'territorio/favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'territorio/favicon_io/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'territorio/favicon_io/site.webmanifest' %}">
+
+
+    <title>{% block modulo %} Index {% endblock %}</title>
+</head>
+
+<body>
+
+
+    {% block body %}
+        ------------- HOLA -----------------
+    {% endblock %}
+
+    {% block adsi %}  {% endblock %}
+
+    {% block terrImg %} 
+        <br/><img src="{% static 'territorio/img/territoriumSena.webp' %}" alt="Territorio SENA" width="80%"> 
+    {% endblock %}
+
+    <script src="{% static 'territorio/js/jquery-3.6.1.min.js' %}"></script>
+
+    <script src="{% static 'territorio/js/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'territorio/js/funciones.js' %}"></script>
+</body>
+
+</html>

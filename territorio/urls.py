@@ -4,6 +4,10 @@ from . import views
 app_name = "territorio"
 urlpatterns = [
     path('', views.index, name="index"),
+    path('loginFormulario/', views.loginFormulario, name="loginForm"),
+    path('login/', views.login, name="login"),
+    path('logout/', views.logout, name="logout"),
+
     path('aprendices/', views.listarAprendiz, name="aprendices"),
     path('aprendicesAdd/', views.aprendicesFormulario, name="form-aprendiz"),
     path('aprendGuardar/', views.aprendicesGuardar, name="guardar-aprend"),

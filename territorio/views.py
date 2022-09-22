@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Aprendiz, Monitoria, Actividades
+from .models import Aprendiz, Monitoria, Actividades, Usuario
 from django.urls import reverse
 from django.db import IntegrityError #Gestión de errorees de bases de datos
 
@@ -19,20 +19,65 @@ def index(request):
     return render(request, 'territorio/index.html')
 
 
+def loginFormulario(request):
+    return render(request, 'territorio/login/login.html')
+
+
+def login(request):
+    if request.method == "POST":
+        try:
+            #Capturar datos del formulario
+            user = request.POST["usuario"]
+            passw = request.POST["clave"]
+
+            #Verificar si existe en base de datos, la ',' es el operador lógico Y.
+            q = Usuario.objects.get(usuario = user, password = passw)
+
+            #Crear la variable de sesión
+            request.session['auth'] = [q.id, q.nombre, q.apellido, q.usuario, q.rol, q.get_rol_display()]
+
+            return redirect('territorio:index')
+
+        except Usuario.DoesNotExist:
+            messages.error(request, "Usuario o contraseña incorrectos...")
+            return redirect('territorio:loginForm')
+    else:
+        messages.warning(request, "Usted no envió datos...")
+        return redirect('territorio:loginForm')
+
+
+def logout(request):
+    try:
+        del request.session['auth']
+        messages.success(request, 'Sesión cerrada correctamente')
+
+    except Exception as e:
+        messages.error(request, f"Ocurrió un error, intente de nuevo...")
+    
+    return redirect('territorio:index')
+
+#------------------------------------------- Aprendices -----------------------------------------------------
+
+#Hacer un decorador para el control de autenticación
 def listarAprendiz(request):
 
-    q = Aprendiz.objects.all()
+    auth = request.session.get('auth', False)
+    if auth:
+        q = Aprendiz.objects.all()
 
-    #Paginación
-    pag = Paginator(q, 6)
-    page_number = request.GET.get('page') #Obtiene variables de la URL
+        #Paginación
+        pag = Paginator(q, 6)
+        page_number = request.GET.get('page') #Obtiene variables de la URL
 
-    #Sobreescibe el query
-    q = pag.get_page(page_number)
+        #Sobreescibe el query
+        q = pag.get_page(page_number)
 
-    contexto = { 'page_obj': q }
+        contexto = { 'page_obj': q }
 
-    return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
+        return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
+    else:
+        messages.warning(request, 'Usted no ha iniciado sesión...')
+        return redirect('territorio:loginForm')
 
 
 def listarAprendizBuscar(request):
@@ -55,7 +100,7 @@ def listarAprendizBuscar(request):
 
         contexto = { 'page_obj': q, 'dato_buscado':  request.POST["dato_buscar"]}
 
-        return render(request, 'territorio/aprendiz/listar_aprendiz.html', contexto)
+        return render(request, 'territorio/aprendiz/listar_aprendiz_ajax.html', contexto)
     else:
         return redirect('territorio:aprendices')
 
@@ -128,7 +173,8 @@ def aprendicesGuardar(request):
         return redirect('territorio:aprendices')
         #return HttpResponse("Error : " + str(e))
 
-#------------------------------------------- Aprendices -----------------------------------------------------
+
+#------------------------------------------- Monitorias -----------------------------------------------------
 
 
 def listarMonitorias(request):
@@ -143,6 +189,25 @@ def listarMonitorias(request):
     contexto = { 'datos': m}
 
     return render(request, 'territorio/monitoria/listar_monitoria.html', contexto)
+
+('cat', 'aprendiz', 'fecha_inicio', 'fecha_final', )
+
+def listarMonitoriasBuscar(request):
+    if request.method == "POST":
+        q = Monitoria.objects.filter(
+            Q(cat__icontains = request.POST["dato_buscar"]) |
+            Q(aprendiz__icontains = Aprendiz.objects.get(pk = request.POST["dato_buscar"])) |
+            Q(fecha_inicio__icontains = request.POST["dato_buscar"]) |
+            Q(fecha_final__icontains = request.POST["dato_buscar"]) 
+        )
+
+        pag = Paginator(q, 4)
+        pag_number = request.GET.get("page")
+
+        # q = 
+
+    else: 
+        pass
 
 
 def monitoriaFormulario(request):
@@ -220,7 +285,7 @@ def monitoriaGuardar(request):
         return HttpResponse("Error : " + str(e))
 
 
-#------------------------------------------- Monitorias -----------------------------------------------------
+#------------------------------------------- Actividades -----------------------------------------------------
 
 
 def listarActividades(request):
@@ -231,7 +296,6 @@ def listarActividades(request):
     return render(request, 'territorio/actividades/listar_actividades.html', contexto)
 
 
-#------------------------------------------- Actividades -----------------------------------------------------
 
 
 

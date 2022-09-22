@@ -1,8 +1,12 @@
 from django.contrib import admin
 
-from .models import Aprendiz, Monitoria, Actividades
+from .models import Aprendiz, Monitoria, Actividades, Usuario, Usuario
 
 # Register your models here.
+
+@admin.register(Usuario)
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'apellido', 'correo', 'usuario', 'password', 'rol')
 
 @admin.register(Aprendiz)
 class AprendizAdmin(admin.ModelAdmin):

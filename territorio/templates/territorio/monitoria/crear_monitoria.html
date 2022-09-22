@@ -19,7 +19,7 @@
         <!--<input type="number" name="aprendiz" placeholder="aprendiz">-->
         {% if data %}
     
-        <select name="aprendiz">
+        <select name="aprendiz" class="form-select">
             <option value="" selected>Seleccione aprendiz</option>
             {% for i in data %}
             <option value="{{i.cedula}}">{{i.nombre}} {{i.apellido}}</option>
@@ -34,7 +34,7 @@
         <label for="fecha_final">Fecha final: </label>
         <input class="form-control" type="datetime-local" name="fecha_final" placeholder="Fecha final"><br/><br/>
 
-        <input type="submit" value="Guardar">
+        <input class="btn btn-success" type="submit" value="Guardar">
     </form>
     
 {% endblock %}
