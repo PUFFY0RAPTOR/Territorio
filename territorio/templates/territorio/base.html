@@ -46,6 +46,11 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'territorio:index' %}">Inicio</a>
                     </li>
+                    {% if request.session.auth.4 != 'R' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'territorio:usuarios' %}">Usuarios</a>
+                    </li>
+                    {% endif %}
                     {% if request.session.auth.4 != 'A' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'territorio:aprendices' %}">Aprendiz</a>

@@ -1,12 +1,19 @@
 from django.contrib import admin
 
-from .models import Aprendiz, Monitoria, Actividades, Usuario, Usuario
+from .models import Aprendiz, Monitoria, Actividades, Usuario
 
 # Register your models here.
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'correo', 'usuario', 'password', 'rol')
+    list_display = ('nombre', 'apellido', 'correo', 'usuario', 'password', 'rol', 'foto', 'verFoto')
+
+    def verFoto(self, obj):
+        #Permite generar codigo HTML en el admin
+        from django.utils.html import format_html 
+
+        foto = obj.foto.url
+        return format_html(f'<a href="{foto}" target="_blank"> <img src="{foto}" width="20%" /></a>')
 
 @admin.register(Aprendiz)
 class AprendizAdmin(admin.ModelAdmin):

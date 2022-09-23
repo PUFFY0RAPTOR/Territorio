@@ -1,0 +1,42 @@
+{% extends 'territorio/base.html' %}
+{% block modulo %} Editar Usuario {% endblock %}
+
+{% block body %}
+    
+    <h1>Editar usuario --- {{datos.usuario}}</h1>
+    <form class="container" action="{% url 'territorio:usu_guardar' %}" method="post">
+
+        {% csrf_token %}
+
+        <br/><label for="nombre">Nombre: </label>
+        <input class="form-control" type="text" name="nombre" value="{{datos.nombre}}"><br/><br/>
+
+        <label for="apellido">Apellido: </label>
+        <input class="form-control" type="text" name="apellido" value="{{datos.apellido}}"><br/><br/>
+
+        <label for="correo">Correo: </label>
+        <input class="form-control" type="email" name="correo" value="{{datos.correo}}"><br/><br/>
+
+        <label for="passw">Contraseña: </label>
+        <input class="form-control" type="password" name="passw" value="{{datos.password}}"><br/><br/>
+
+        <label for="roles">Rol: </label>
+        <select name="roles">
+        {% if usu %}
+            {% for i in usu %}
+            <option value="{{i.rol}}">{{i.rol}}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+        <label for="foto">Foto: </label>
+        <input class="form-control" type="file" name="foto"><br/><br/>
+        
+        <input class="btn btn-warning" type="submit" value="Guardar">
+    </form>
+    
+{% endblock %}
+
+{% block terrImg %}
+    
+{% endblock %}

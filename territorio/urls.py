@@ -25,4 +25,12 @@ urlpatterns = [
     path('actualizarMonitoria/', views.actualizarMonitoria, name="actual-monit"),
 
     path('actividades/', views.listarActividades, name="actividades"),
-]
+
+    path('listarUsuario/', views.listarUsuario, name="usuarios"),
+    path('eliminarUsu/<int:id>', views.eliminarUsuario, name="elim-usu"),
+    path('usuEditForm/<int:id>', views.usuFormularioEditar, name="form-usu"),
+    path('usuEdit/', views.actualizarUsuario, name="actual_usu"),
+    path('usuForm/', views.usuFormulario, name="usu_form"),
+    path('usuGuardar/', views.usuGuardar, name="usu_guardar"),
+    
+] 

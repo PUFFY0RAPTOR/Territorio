@@ -1,0 +1,103 @@
+{% extends 'territorio/base.html' %}
+{% block modulo %} Usuario {% endblock %}
+
+    {% block body %}
+
+        <h1 style="text-align: center;">Usuario</h1><br/>
+
+        <a class="btn btn-info" href="{% url 'territorio:usu_form' %}">Nuevo usuario</a><br/><br/>
+
+        <!-- Buscar por autocompletado -->
+        <input class="form-control me-2 col-ms-2" id="dato_buscar" name="dato_buscar"
+        type="search" placeholder="Buscar" aria-label="Buscar" value="{{ dato_buscado }}"
+        onkeyup="buscarAprendices('{% url 'territorio:buscar_aprend' %}');"><br/>
+
+        {% csrf_token %}
+
+        {% if dato_buscado %}
+            <a class="btn btn-warning" href="{% url 'territorio:aprendices' %}">Ver todos</a>
+        {% endif %}
+
+        <div id="respuesta">
+
+            {% if page_obj %}
+
+            <table class="container table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Correo</th>
+                        <th>Usuario</th>
+                        <th>Password</th>
+                        <th>Rol</th>
+                        <th>Foto</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in page_obj %}
+                    <tr>
+                        <td>{{ r.nombre}}</td>
+                        <td>{{ r.apellido}}</td>
+                        <td>{{ r.correo}}</td>
+                        <td>{{r.usuario}}</td>
+                        <td>{{r.password}}</td>
+                        <td>{{r.rol}}</td>
+                        <td><img src="{{r.foto.url}}" width="70%" height="90px" /></td>
+                        <td><a class="btn btn-warning" href="{% url 'territorio:form-usu' r.id %}">Editar</a></td>
+                        <td><a class="btn btn-danger" onclick="confirmacion('{% url 'territorio:elim-usu' r.id %}')">Eliminar</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!--Código de la paginación-->
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+                        
+                        <a class="page-link" {% if page_obj.has_previous %} href="?page={{ page_obj.previous_page_number }}" {% endif %} >Anterior</a>
+                        
+                    </li>
+                    
+                    {% for i in "x"|rjust:page_obj.paginator.num_pages|make_list %}
+                        
+                        <li class="page-item {% if forloop.counter == page_obj.number %} active {% endif %}">
+                            <a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                        </li>
+                    
+                    {% endfor %}
+        
+                    <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+        
+                        <a class="page-link" {% if page_obj.has_next %} href="?page={{ page_obj.next_page_number }}" {% endif %}>Siguiente</a>
+        
+                    </li>
+                </ul>
+            </nav>
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+
+            
+            {% else %}
+            <table class="container table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Fecha de nacimiento</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            {% endif %}
+        {% endblock %}
+
+    </div>
+
+    {% block terrImg %}{% endblock %}

@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 
 # Create your models here.
@@ -15,6 +16,7 @@ class Usuario(models.Model):
     )
     #enumerate mysql
     rol = models.CharField(choices = ROLES, max_length=1, default="A")
+    foto = models.ImageField(upload_to = '', default = 'perfil.png')
 
     def __str__(self):
         return self.nombre

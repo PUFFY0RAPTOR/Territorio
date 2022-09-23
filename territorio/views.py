@@ -296,7 +296,128 @@ def listarActividades(request):
     return render(request, 'territorio/actividades/listar_actividades.html', contexto)
 
 
+#------------------------------------------- Usuarios -----------------------------------------------------
+def listarUsuario(request):
 
+    auth = request.session.get('auth', False)
+    if auth and (auth[4] == 'R' or auth[4] == 'I'):
+        q = Usuario.objects.all()
+
+        #Paginación
+        pag = Paginator(q, 6)
+        page_number = request.GET.get('page') #Obtiene variables de la URL
+
+        #Sobreescibe el query
+        q = pag.get_page(page_number)
+
+        contexto = { 'page_obj': q }
+
+        return render(request, 'territorio/usuario/listarUsuario.html', contexto)
+    else:
+        messages.warning(request, 'Usted no ha iniciado sesión...')
+        return redirect('territorio:loginForm')
+
+""" def listarAprendizBuscar(request):
+
+    if request.method == "POST":
+
+        #Se filtra para poder encontrar dependiendo de lo que se busque
+        q = Aprendiz.objects.filter(
+            Q(cedula__icontains = request.POST["dato_buscar"]) |
+            Q(nombre__icontains = request.POST["dato_buscar"]) |
+            Q(apellido__icontains = request.POST["dato_buscar"]) 
+        )
+
+        #Paginación
+        pag = Paginator(q, 6)
+        page_number = request.GET.get('page') #Obtiene variables de la URL
+
+        #Sobreescibe el query
+        q = pag.get_page(page_number)
+
+        contexto = { 'page_obj': q, 'dato_buscado':  request.POST["dato_buscar"]}
+
+        return render(request, 'territorio/aprendiz/listar_aprendiz_ajax.html', contexto)
+    else:
+        return redirect('territorio:aprendices') """
+
+
+def eliminarUsuario(request, id):
+    try:
+        a = Usuario.objects.get(pk = id) 
+        a.delete()
+        return HttpResponseRedirect(reverse('territorio:usuarios'))
+
+    except Aprendiz.DoesNotExist:
+        return HttpResponse('Error: Aprendiz no existe')
+    except IntegrityError:
+        return HttpResponse('Error: No se puede eliminar al Aprendiz ya que está siendo usado')
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')      
+
+
+def usuFormularioEditar(request, id):
+    a = Usuario.objects.get(pk = id)
+    q = Usuario.objects.all()
+    contexto = {'datos': a, 'usu':q}
+
+    return render(request, 'territorio/usuario/editarUsuario.html', contexto) 
+
+
+def actualizarUsuario(request):
+    try:
+        if request.method == "POST":
+            a = Usuario.objects.get(pk = request.POST["id"])
+            
+            nombre = request.POST["nombre"]
+            apellido = request.POST["apellido"]
+            correo = request.POST["correo"]
+            password = request.POST["passw"]
+            rol = request.POST["roles"]
+            foto = request.POST["foto"]
+
+            a.save()
+            messages.success(request, 'Usuario guardado correctamente')
+            return redirect('territorio:usuarios')
+            #return HttpResponseRedirect(reverse('territorio:aprendices'))
+        else:
+            messages.warning(request, 'A hackear a su madre perr*')
+            return redirect('territorio:usuarios')    
+    except Exception as e:
+        messages.error(request, 'Error : ' + str(e))
+        return redirect('territorio:usuarios')
+
+
+def usuFormulario(request):
+
+    q = Usuario.objects.all()
+
+    contexto = {'usu': q}
+
+    return render(request, 'territorio/usuario/crearUsuario.html', contexto)
+
+
+def usuGuardar(request):
+    try:
+        if request.method == "POST":
+            q = Usuario(
+                nombre = request.POST["nombre"],
+                apellido = request.POST["apellido"],
+                correo = request.POST["correo"],
+                password = request.POST["passw"],
+                rol = request.POST["roles"],
+                foto = request.POST["foto"],
+            )
+            q.save()
+            messages.success(request, 'Usuario guardado correctamente')
+            return redirect('territorio:usuarios')
+            #return HttpResponseRedirect(reverse('territorio:aprendices'))
+        else:
+            messages.warning(request, 'A hackear a su madre perr*')
+            return redirect('territorio:usuarios')    
+    except Exception as e:
+        messages.error(request, 'Error : ' + str(e))
+        return redirect('territorio:usuarios')
 
 
 #Consultar offcanvas en Bootstrap 5
