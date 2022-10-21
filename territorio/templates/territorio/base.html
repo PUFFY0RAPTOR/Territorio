@@ -7,6 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" description="Sebastian Pertuz">
+    
+    {% comment %} Bootstrap icons {% endcomment %}
+    <link rel="stylesheet" href="{% static 'territorio/bootstrap-icons-1.9.1/bootstrap-icons.css' %}">
+
     <!-- Bootstrap 5.2.0 -->
     <link rel="stylesheet" href="{% static 'territorio/css/bootstrap.min.css' %}">
 
@@ -46,7 +50,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'territorio:index' %}">Inicio</a>
                     </li>
-                    {% if request.session.auth.4 != 'R' %}
+                    {% if request.session.auth.4 == 'R' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'territorio:usuarios' %}">Usuarios</a>
                     </li>
@@ -65,16 +69,17 @@
                         <a class="nav-link" href="{% url 'territorio:actividades' %}">Actividades</a>
                     </li>
                     {% if request.session.auth %}
-                    <span class="d-inline">
+                    <p class="text-end">
                         {% if request.session.auth %}
                             Bienvenido <strong>{{ request.session.auth.3 }}</strong>
                         {% else %}
                             No ha iniciado sesión.
                         {% endif %}
                         <a href="{% url 'territorio:logout' %}" class="btn btn-warning">
-                            Cerrar sesión
+                            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
                         </a>
-                    </span>
+                        <button onclick="location.href='{% url 'territorio:perfil' %}';" class="btn btn-success"><i class="bi bi-person-circle"></i> {{ request.session.auth.5 }} {{ request.session.auth.1 }}</button>
+                    </p>
                     {% else %}
                         <li class="nav-item ml-auto">
                             <a class="nav-link btn btn-info" href="{% url 'territorio:loginForm' %}">Login</a>

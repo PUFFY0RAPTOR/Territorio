@@ -1,0 +1,46 @@
+{% extends 'territorio/base.html' %}
+
+{% block body %}
+
+    <h1 class="text-center mt-2">Perfil</h1>
+    
+    <div class="card mb-3 mt-5 mx-auto" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{{ perfil.foto.url }}" class="img-fluid rounded-start" alt="{{ perfil.foto.name }}">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{ request.session.auth.5 }} {{ request.session.auth.1 }}</h5>
+              <p class="card-text">
+                <form action="{% url 'territorio:updatePerfil' %}" method="post" class="m-4">
+                    
+                    {% csrf_token %}
+
+                    <label class="form-label" for="name">Nombre: </label>
+                    <input class="form-control" type="text" id="name" name="nombre" value="{{ perfil.nombre }}">
+
+                    <br><label class="form-label" for="appe">Apellido: </label>
+                    <input class="form-control" type="text" id="appe" name="apellido" value="{{ perfil.apellido }}">
+
+                    <br><label class="form-label" for="corr">Correo: </label>
+                    <input class="form-control" type="email" id="corr" name="correo" value="{{ perfil.correo }}">
+
+                    <br><label class="form-label" for="usu">Usuario: </label>
+                    <input class="form-control" type="text" id="usu" name="usuario" value="{{ perfil.usuario }}">
+                    
+                    <br><label class="form-label" for="passw">Contraseña: </label><br>
+                    <small class="text-muted">Dejar en blanco para mantener...</small>
+                    <input class="form-control" type="password" id="passw" name="password">
+
+                    <button type="submit" class="btn btn-primary mt-4">Actualizar</button>
+
+                </form>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}
+
