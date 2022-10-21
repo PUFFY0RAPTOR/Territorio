@@ -6,7 +6,7 @@ from .models import Aprendiz, Monitoria, Actividades, Usuario
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'correo', 'usuario', 'password', 'rol', 'foto', 'verFoto')
+    list_display = ('nombre', 'apellido', 'correo', 'usuario', 'rol', 'foto', 'verFoto')
 
     def verFoto(self, obj):
         #Permite generar codigo HTML en el admin

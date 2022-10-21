@@ -130,3 +130,12 @@ MEDIA_ROOT = BASE_DIR / 'uploads'
 MEDIA_URL = 'uploads/'
  
 STATIC_ROOT = 'static/'
+
+#Configuration of the email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sebastianpertuzg@gmail.com'
+EMAIL_HOST_PASSWORD = 'vemilcnvlmzxfjuy'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False

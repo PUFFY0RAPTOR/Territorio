@@ -4,7 +4,7 @@
 {% block body %}
     
     <h1>Formulario de registro de usuarios</h1>
-    <form class="container" action="{% url 'territorio:usu_guardar' %}" method="post">
+    <form class="container" action="{% url 'territorio:usu_guardar' %}" method="post" enctype="multipart/form-data">
 
         {% csrf_token %}
 

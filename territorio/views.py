@@ -13,6 +13,9 @@ from django.core.paginator import Paginator
 #Para poder filtrar más datos
 from django.db.models import Q
 
+#Archivo encriptado
+from .cryp import claveEncriptada
+
 #El request es un parametro que necesita django para manipular la peticion-respuesta (GET, POST, DELETE)
 
 def index(request):    
@@ -28,7 +31,7 @@ def login(request):
         try:
             #Capturar datos del formulario
             user = request.POST["usuario"]
-            passw = request.POST["clave"]
+            passw = claveEncriptada(request.POST['clave'])
 
             #Verificar si existe en base de datos, la ',' es el operador lógico Y.
             q = Usuario.objects.get(usuario = user, password = passw)
@@ -55,6 +58,78 @@ def logout(request):
         messages.error(request, f"Ocurrió un error, intente de nuevo...")
     
     return redirect('territorio:index')
+
+
+def perfil(request):
+
+    login = request.session.get('auth', False)
+    q = Usuario.objects.get(pk = login[0])
+
+    contexto = {'perfil': q}
+
+    return render(request, 'territorio/usuario/perfil.html', contexto)
+
+
+def actualizarPerfil(request):
+    if request.method == "POST":
+        try:
+            login = request.session.get('auth', False)
+            q = Usuario.objects.get(pk = login[0])
+
+            q.nombre = request.POST['nombre']
+            q.apellido = request.POST['apellido']
+            q.correo = request.POST['correo']
+
+            #Controlar
+            if q.usuario != request.POST["usuario"]:
+                try:
+                    consulta = Usuario.objects.get(usuario = request.POST["usuario"])
+                    messages.debug(request, "Resultado consulta usuario", consulta)
+                    raise Exception("Usuario ya existe...")
+                except Usuario.DoesNotExist:
+                    q.usuario = request.POST['usuario']
+            else:
+                messages.debug(request, "El usuario ya existe...")
+                q.usuario = request.POST['usuario']
+
+
+            if request.POST['password'] != "":
+                #Hash password pbdkf2_hmac+sha256
+                q.password = claveEncriptada(request.POST['password'])
+
+            
+            q.save()
+            #Send email
+
+            from django.core.mail import send_mail
+
+            try:
+                send_mail(
+                    'Correo de prueba',
+                    'Hola Muchachos soy Pertúz, te escribo desde Django, estoy probando como se envian los correos para sus datos.',
+                    'sebastianpertuzg@gmail.com',
+                    ['mateoortiz202@gmail.com', 'cristian.arboleda02@gmail.com', 'johanfelip2004@gmail.com', 'jcgaleano58@misena.edu.co'],
+                    fail_silently=False,
+                )
+                messages.info(request, "Correo enviado correctamente")
+            except Exception as e:
+                messages.error(request, f"Error: {e}")
+
+            #-------------
+
+            login[1] = q.nombre
+            login[2] = q.apellido
+            request.session["auth"] = login
+            messages.success(request, 'Usuario actualizado correctamente')
+            #sesión...
+        except Usuario.DoesNotExist:
+            messages.error(request, "No existe el usuario")
+        except Exception as e:
+            messages.error(request, "Error: "+ str(e))
+    else:
+        messages.warning(request, 'No envió datos...')
+
+    return redirect('territorio:perfil')
 
 #------------------------------------------- Aprendices -----------------------------------------------------
 
@@ -314,7 +389,7 @@ def listarUsuario(request):
 
         return render(request, 'territorio/usuario/listarUsuario.html', contexto)
     else:
-        messages.warning(request, 'Usted no ha iniciado sesión...')
+        messages.warning(request, 'Usted no está autorizado...')
         return redirect('territorio:loginForm')
 
 """ def listarAprendizBuscar(request):
@@ -369,12 +444,12 @@ def actualizarUsuario(request):
         if request.method == "POST":
             a = Usuario.objects.get(pk = request.POST["id"])
             
-            nombre = request.POST["nombre"]
-            apellido = request.POST["apellido"]
-            correo = request.POST["correo"]
-            password = request.POST["passw"]
-            rol = request.POST["roles"]
-            foto = request.POST["foto"]
+            a.nombre = request.POST["nombre"]
+            a.apellido = request.POST["apellido"]
+            a.correo = request.POST["correo"]
+            a.password = claveEncriptada(request.POST["passw"])
+            a.rol = request.POST["roles"]
+            a.foto = request.POST["foto"]
 
             a.save()
             messages.success(request, 'Usuario guardado correctamente')
@@ -404,7 +479,7 @@ def usuGuardar(request):
                 nombre = request.POST["nombre"],
                 apellido = request.POST["apellido"],
                 correo = request.POST["correo"],
-                password = request.POST["passw"],
+                password = claveEncriptada(request.POST["passw"]),
                 rol = request.POST["roles"],
                 foto = request.POST["foto"],
             )

@@ -29,7 +29,6 @@
                         <th>Apellido</th>
                         <th>Correo</th>
                         <th>Usuario</th>
-                        <th>Password</th>
                         <th>Rol</th>
                         <th>Foto</th>
                         <th>Editar</th>
@@ -43,7 +42,6 @@
                         <td>{{ r.apellido}}</td>
                         <td>{{ r.correo}}</td>
                         <td>{{r.usuario}}</td>
-                        <td>{{r.password}}</td>
                         <td>{{r.rol}}</td>
                         <td><img src="{{r.foto.url}}" width="70%" height="90px" /></td>
                         <td><a class="btn btn-warning" href="{% url 'territorio:form-usu' r.id %}">Editar</a></td>
